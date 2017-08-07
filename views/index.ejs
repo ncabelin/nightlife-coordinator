@@ -1,0 +1,29 @@
+<% include partials/header.ejs %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="jumbotron">
+        <h1>Nightlife with Yelp</h1>
+        <% if (user) { %>
+          <p class="lead">Welcome <%= user.name %>, Search for bars near you.</p>
+        <% } else { %>
+          <p class="lead">Search for the nearest bars with Yelp.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <form>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search for...">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Go!</button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<% include partials/scripts.ejs %>
+<% include partials/footer.ejs %>
