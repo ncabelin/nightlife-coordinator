@@ -1,0 +1,31 @@
+<% include partials/header.ejs %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Search Results around <%= location %></h4>
+      <% if (!user) { %>
+      <p class="small pull-right">Login to Save Results and Collaborate with Friends..</p>
+      <% }%>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <% results.businesses.forEach(function(d) { %>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><strong><%= d.name %></strong></h3>
+        </div>
+        <div class="panel-body">
+          <img src="<%= d.image_url %>" class="img-responsive">
+          <small><em>&quot;<%= d.snippet_text %>&quot;</em><a href="<%= d.url %>" target="_blank"> &lt;read more on Yelp...&gt;</a></small>
+          <img src="<%= d.rating_img_url_large %>" class="img-responsive" style="margin-top:10px;">
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>
+<script>
+console.log(<%- JSON.stringify(results) %>);
+</script>
+<% include partials/footer.ejs %>

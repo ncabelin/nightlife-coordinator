@@ -1,0 +1,35 @@
+{
+  "name": "nightlife",
+  "version": "1.0.0",
+  "description": "This application coordinates bar-hopping with you and your friends by giving you results of bars at a given location or your navigation location.",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.15.3",
+    "express-session": "^1.15.4",
+    "method-override": "^2.3.9",
+    "mongoose": "^4.11.5",
+    "morgan": "^1.8.2",
+    "passport": "^0.3.2",
+    "passport-twitter": "^1.0.4",
+    "request": "^2.81.0",
+    "yelp": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ncabelin/nightlife-coordinator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ncabelin/nightlife-coordinator/issues"
+  },
+  "homepage": "https://github.com/ncabelin/nightlife-coordinator#readme"
+}

@@ -1,4 +1,9 @@
 <% include partials/header.ejs %>
+<style>
+  em {
+    font-size: .9em;
+  }
+</style>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
@@ -13,12 +18,15 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-6">
-      <form>
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for...">
+    <div class="col-md-6 col-md-offset-3">
+      <form method="POST" action="/search" id="form">
+        <div class="input-group input-group-lg">
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Go!</button>
+            <a class="btn btn-default" id="gps"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
+          </span>
+          <input type="text" class="form-control" placeholder="Search for..." id="location" name="location">
+          <span class="input-group-btn">
+            <input class="btn btn-default" type="submit" value="Go">
           </span>
         </div>
       </form>
@@ -26,4 +34,36 @@
   </div>
 </div>
 <% include partials/scripts.ejs %>
+<script>
+$(function() {
+  $('#gps').click(function() {
+    getLocation();
+  });
+
+  function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        Alert('No geolocator found in your system');
+    }
+    }
+
+    function showPosition(position) {
+      $.ajax({
+        url: '/zipcode',
+        type: 'POST',
+        data: {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+      }).done(function(data) {
+        $('#location').val(JSON.parse(data).results[0].formatted_address);
+        $('#form').submit();
+        console.log('submitting')
+      }).fail(function(err) {
+        Alert('Error getting your coordinates');
+      })
+    }
+});
+</script>
 <% include partials/footer.ejs %>
