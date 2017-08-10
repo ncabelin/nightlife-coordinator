@@ -1,3 +1,35 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(function() {
+  $('#gps').click(function() {
+    getLocation();
+  });
+
+  function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        Alert('No geolocator found in your system');
+    }
+    }
+
+    function showPosition(position) {
+      $.ajax({
+        url: '/zipcode',
+        type: 'POST',
+        data: {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+      }).done(function(data) {
+        $('#location').val(JSON.parse(data).results[0].formatted_address);
+        $('#form').submit();
+        console.log('submitting')
+      }).fail(function(err) {
+        Alert('Error getting your coordinates');
+      })
+    }
+});
+</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

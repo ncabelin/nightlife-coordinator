@@ -15,6 +15,10 @@ h1 {
 	color: black;
 }
 
+.hidden {
+	display: none;
+}
+
 .logo {
 	font-family: 'Pacifico', cursive;
 	.whiteish {
@@ -83,6 +87,10 @@ h1 {
 	background-color: lighten($blue, 10%);
 	color: white;
 	text-decoration: none;
+}
+
+.panel-title {
+	display: inline;
 }
 
 a:hover {

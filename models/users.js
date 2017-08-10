@@ -23,6 +23,12 @@ var User = new Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'My_friends_requests'
     }
+  ],
+  my_locations: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'My_locations'
+    }
   ]
 });
 

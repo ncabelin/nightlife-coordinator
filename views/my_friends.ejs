@@ -1,0 +1,30 @@
+<% include partials/header.ejs %>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>My Friends</h2>
+      <h4>You have <%= user.my_friends.length %> friends.</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <hr>
+      <% if (user.my_friends.length) { %>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">My Friends List</h3>
+          </div>
+          <div class="panel-body">
+            <ol>
+              <% user.my_friends.forEach(function(f) { %>
+                <li>f.name</li>
+              <% }) %>
+            </ol>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<% include partials/scripts.ejs %>
+<% include partials/footer.ejs %>

@@ -19,8 +19,6 @@
           <h3 class="panel-title"><strong><%= d.name %></strong></h3>
           <% if (user) { %>
             <button class="save btn btn-default" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
-            <button class="go btn btn-default" data-id="<%= d.id %>" id="going-btn-<%= d.id %>" data-toggle="tooltip" data-placement="bottom"  title="">0 Going</button>
-            <span class="small" id="names-<%= d.id %>"></span>
           <% } %>
         </div>
         <div class="panel-body">
@@ -53,9 +51,9 @@ $(function() {
   // check all bars on page load
   results.businesses.forEach(function(b) {
     console.log('checking ' + b.name);
-    $('#going-btn-' + b.id).hide();
     checkBar(b.id)
       .done(function(bar) {
+        console.log(bar);
         renderSavedBar({data: bar});
       })
       .fail(function(e) {
@@ -68,62 +66,48 @@ $(function() {
 
   });
 
-  function generateNames(bar) {
-    var going_names = '',
-        going_count = bar.going.length;
-    // populate bar names for the tooltip hover
-    bar.going.forEach(function(b, i) {
-      i === going_count - 1 ? going_names += b.name : going_names += b.name + ', ';
-    });
-    return going_names;
-  }
-
   // render bar title elements and hide 'save' button
   function renderSavedBar(bar) {
     var bar_id = bar.data.id,
-        going_names = '',
-        going_count = bar.data.going.length,
-        name_list = $('#names-' + bar_id),
-        save_btn = $('#save-btn-' + bar_id),
-        going_btn = $('#going-btn-' + bar_id);
+        bar_names = '',
+        going_btn = $('#going-' + bar_id);
 
-    if (going_count > 0) {
-      going_names = generateNames(bar.data);
+    if (bar.data.going.length > 0) {
+      // populate bar names for the tooltip hover
+      bar.data.going.forEach(function(b, i) {
+        if (i == bar.data.going.length - 1) {
+          bar_names += b.name;
+        } else {
+          bar_names += b.name + ',\r\n';
+        }
+      });
     }
 
-    going_btn.show();
-    name_list.text(going_names);
-    going_btn.text(going_count + ' going');
-    save_btn.hide();
-  }
-
-  $('.go').click(function() {
-    var id = $(this).data('id');
-    results.businesses.forEach(function(d) {
-      if (d.id === id) {
-        $.ajax({
-          type: 'POST',
-          url: '/going',
-          data: { id: d.id },
-          dataType: 'json'
-        }).done(function(result) {
-          if (result.message) {
-            console.log('deleted ' + result.name);
-
-            // change name list
-            $('#names-' + id).text(generateNames(result.bar));
-
-            // change value
-            $('#going-btn-' + id).text(result.bar.going.length + ' going');
-          } else {
-            renderSavedBar({ data: result});
-          }
-        }).fail(function(err) {
-          console.log(err);
-        });
-      }
+    if (!going_btn.html()) {
+      $('#' + bar_id).append('<span class="btn btn-default going-btn" data-toggle="tooltip" data-placement="bottom" id="going-' + bar_id + '" title="' + bar_names + '">' + bar.data.going.length + ' going</span>')
+        .css('background-color','green')
+        .css('color', 'white');
+    } else {
+      going_btn.text(bar.data.going.length + ' going');
+    }
+    $('#going-' + bar_id).click(function() {
+      // add bar where you are going
+      var going_id = this.id.split('going-')[1];
+      $.ajax({
+        type: 'POST',
+        url: '/going',
+        data: { id: going_id }
+      }).done(function(d) {
+        // reload page
+        location.reload();
+      }).fail(function(e) {
+        console.log(e);
+      });
     });
-  });
+    $('#save-btn-' + bar_id).hide();
+    // Enable all tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+  }
 
   // clicking save creates new bar title elements
   $('.save').click(function() {
@@ -136,6 +120,7 @@ $(function() {
           data: d,
           dataType: 'json'
         }).done(function(result) {
+          console.log(result);
           renderSavedBar(result);
         }).fail(function(err) {
           console.log(err);

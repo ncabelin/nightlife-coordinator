@@ -7,6 +7,9 @@ h1 {
   font-weight: bold;
   color: black; }
 
+.hidden {
+  display: none; }
+
 .logo {
   font-family: 'Pacifico', cursive; }
   .logo .whiteish {
@@ -67,6 +70,9 @@ h1 {
   background-color: #4db5f5;
   color: white;
   text-decoration: none; }
+
+.panel-title {
+  display: inline; }
 
 a:hover {
   text-decoration: none; }

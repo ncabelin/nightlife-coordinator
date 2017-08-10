@@ -34,6 +34,7 @@ Nightlife_user :
 My_bars :
 ------ _id
 ------ name
+------ date
 ------ picture
 ------ description
 ------ url
