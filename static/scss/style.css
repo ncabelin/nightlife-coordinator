@@ -97,6 +97,28 @@ a:hover {
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #1DA1F2; }
 
+/* Tooltip container */
+.tool-tip {
+  position: relative;
+  display: inline-block; }
+
+/* Tooltip text */
+.tool-tip .tool-tip-text {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 5; }
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tool-tip:hover .tool-tip-text {
+  visibility: visible; }
+
 @media screen and (max-width: 480px) {
   h3 {
     font-size: 1em; } }

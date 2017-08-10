@@ -19,8 +19,13 @@
           <h3 class="panel-title"><strong><%= d.name %></strong></h3>
           <% if (user) { %>
             <button class="save btn btn-default" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
-            <button class="go btn btn-default" data-id="<%= d.id %>" id="going-btn-<%= d.id %>" data-toggle="tooltip" data-placement="bottom"  title="">0 Going</button>
-            <span class="small" id="names-<%= d.id %>"></span>
+            <div class="go btn btn-default tool-tip" data-id="<%= d.id %>">
+              <span id="going-btn-<%= d.id %>">0 Going</span>
+              <span class="small tool-tip-text clearfix" id="names-<%= d.id %>"></span>
+            </div>
+            <!-- <div class="tool-tip">Hover over me
+              <span class="tool-tip-text">Tooltip text</span>
+            </div> -->
           <% } %>
         </div>
         <div class="panel-body">
@@ -38,6 +43,8 @@
 <script>
 $(function() {
   var results = <%- JSON.stringify(results) %>;
+  // stores saved bar location id
+  var saved_bars = [];
   console.log(results);
 
   // checks if bar exists, returns AJAX promise
@@ -63,11 +70,6 @@ $(function() {
       });
   })
 
-  $('#save_all').click(function() {
-      // save all results
-
-  });
-
   function generateNames(bar) {
     var going_names = '',
         going_count = bar.going.length;
@@ -78,7 +80,7 @@ $(function() {
     return going_names;
   }
 
-  // render bar title elements and hide 'save' button
+  // render bar title elements, show 'going' button and hide 'save' button
   function renderSavedBar(bar) {
     var bar_id = bar.data.id,
         going_names = '',
@@ -97,6 +99,28 @@ $(function() {
     save_btn.hide();
   }
 
+  // CLICK HANDLERS
+  // --------------
+  $('#save_all').click(function() {
+      // save all results
+      results.businesses.forEach(function(d) {
+        var index = saved_bars.indexOf(d.id);
+        if (index === -1) {
+          $.ajax({
+            type: 'POST',
+            url: '/save_location',
+            data: d,
+            dataType: 'json'
+          }).done(function(result) {
+            renderSavedBar(result);
+          }).fail(function(err) {
+            alert('Error saving bar');
+          });
+        }
+      });
+  });
+
+  // clicking go hides
   $('.go').click(function() {
     var id = $(this).data('id');
     results.businesses.forEach(function(d) {
@@ -107,6 +131,8 @@ $(function() {
           data: { id: d.id },
           dataType: 'json'
         }).done(function(result) {
+          // result.message indicates user has already clicked go before
+          // will update going count and names
           if (result.message) {
             console.log('deleted ' + result.name);
 
@@ -125,7 +151,8 @@ $(function() {
     });
   });
 
-  // clicking save creates new bar title elements
+  // clicking save shows new bar title elements and hides save button
+  // after success in saving location server-side
   $('.save').click(function() {
     var id = $(this).data('id');
     results.businesses.forEach(function(d) {
