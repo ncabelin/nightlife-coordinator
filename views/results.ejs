@@ -7,22 +7,23 @@
       <p class="small pull-right">Login to Save Results and Collaborate with Friends..</p>
       <% } else { %>
           <button class="btn btn-default" id="save_all">Save All Results</button>
+          <hr>
       <% } %>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <hr>
+<div class="flexthis">
+  <div class="row" style="display: flex; flex-wrap: wrap;">
       <% results.businesses.forEach(function(d) { %>
+    <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading" id="<%= d.id %>">
           <h3 class="panel-title"><strong><%= d.name %></strong></h3>
           <% if (user) { %>
             <button class="save btn btn-default" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
-            <div class="go btn btn-default tool-tip" data-id="<%= d.id %>">
-              <span id="going-btn-<%= d.id %>">0 Going</span>
+            <span class="go tool-tip" data-id="<%= d.id %>" id="going-div-<%= d.id %>">
+              <span id="going-btn-<%= d.id %>" class="btn btn-default tool-btn">0 Going</span>
               <span class="small tool-tip-text clearfix" id="names-<%= d.id %>"></span>
-            </div>
+            </span>
             <!-- <div class="tool-tip">Hover over me
               <span class="tool-tip-text">Tooltip text</span>
             </div> -->
@@ -34,7 +35,26 @@
           <img src="<%= d.rating_img_url_large %>" class="img-responsive" style="margin-top:10px;">
         </div>
       </div>
+    </div>
       <% }); %>
+  </div>
+</div>
+  <!-- Button trigger modal -->
+  <button type="button" style="display:none;" data-toggle="modal" data-target="#loader">
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="loader" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h1 class="modal-title text-center" id="myModalLabel">Loading...</h1>
+        </div>
+        <div class="modal-body">
+          <div class="loader"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -57,13 +77,21 @@ $(function() {
     });
   }
 
+  // generate Loading spinner on page load
+  $('#loader').modal('show');
   // check all bars on page load
-  results.businesses.forEach(function(b) {
+  results.businesses.forEach(function(b, i) {
     console.log('checking ' + b.name);
     $('#going-btn-' + b.id).hide();
+
+    // check if bars are already saved
     checkBar(b.id)
       .done(function(bar) {
+        saved_bars.push(b.id);
         renderSavedBar({data: bar});
+        if (i === results.businesses.length - 1) {
+          $('#loader').modal('hide');
+        }
       })
       .fail(function(e) {
         console.log('didnt find ' + b.name);
@@ -104,6 +132,7 @@ $(function() {
   $('#save_all').click(function() {
       // save all results
       results.businesses.forEach(function(d) {
+        // check first if bar has already been saved
         var index = saved_bars.indexOf(d.id);
         if (index === -1) {
           $.ajax({
@@ -163,6 +192,7 @@ $(function() {
           data: d,
           dataType: 'json'
         }).done(function(result) {
+          saved_bars.push(result.data.id);
           renderSavedBar(result);
         }).fail(function(err) {
           console.log(err);
