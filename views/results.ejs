@@ -17,8 +17,11 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading" id="<%= d.id %>">
-          <h3 class="panel-title"><strong><%= d.name %></strong></h3><br>
+          <div class="text-center">
+            <h3 class="panel-title"><strong><%= d.name %></strong></h3>
+          </div>
           <% if (user) { %>
+          <div class="text-center center-block">
             <button class="save btn btn-default btn-xs light-btn" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
             <span class="go tool-tip" data-id="<%= d.id %>" id="going-div-<%= d.id %>">
               <span id="going-btn-<%= d.id %>" class="btn btn-default btn-xs tool-btn light-btn">0 Going</span>
@@ -28,6 +31,7 @@
               <span id="date-text-<%= d.id  %>"></span>
               <span class="small tool-tip-text">click to change date to today</span>
             </span>
+          </div>
           <% } %>
         </div>
         <div class="panel-body">
