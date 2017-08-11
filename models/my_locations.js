@@ -12,4 +12,4 @@ var My_locations_schema = new Schema({
   date: Date
 });
 
-module.exports = mongoose.model('My_bars', My_bars_schema);
+module.exports = mongoose.model('My_locations', My_locations_schema);
