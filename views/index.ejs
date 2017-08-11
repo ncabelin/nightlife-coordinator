@@ -8,11 +8,11 @@
   <div class="row">
     <div class="col-md-12">
       <div class="jumbotron">
-        <h1>Nightlife with Yelp</h1>
+        <h1>barsTonight <i class="fa fa-glass"></i></h1>
         <% if (user) { %>
-          <p class="lead">Welcome <%= user.name %>, Search for bars near you.</p>
+          <p class="lead">Welcome <%= user.name %>, Search for bars to go to tonight near you.</p>
         <% } else { %>
-          <p class="lead">Search for the nearest bars with Yelp.</p>
+          <p class="lead">Search for the nearest bars with Yelp.<br>Login to save and coordinate with other Twitter users</p>
         <% } %>
       </div>
     </div>
@@ -22,7 +22,7 @@
       <form method="POST" action="/search" id="form">
         <div class="input-group input-group-lg">
           <span class="input-group-btn">
-            <a class="btn btn-default" id="gps"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
+            <a class="btn btn-default gps" id="gps"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
           </span>
           <input type="text" class="form-control" placeholder="Search for..." id="location" name="location">
           <span class="input-group-btn">
@@ -32,6 +32,49 @@
       </form>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <hr>
+    <% if (user) { %>
+      <p class="text-center"><strong>Last Locations:</strong></p>
+    <% } %>
+      <% my_locations.forEach(function(loc) { %>
+        <form style="display:inline" method="POST" action="/search">
+          <input type="hidden" name="location" value="<%= loc.location %>">
+          <button class="btn btn-default dark-btn" type="submit"><%= loc.location %></button>
+        </form>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <button type="button" style="display:none;" data-toggle="modal" data-target="#loader">
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="loader" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h1 class="modal-title text-center" id="myModalLabel">Getting your coordinates...</h1>
+        </div>
+        <div class="modal-body">
+          <div class="loader"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <% include partials/scripts.ejs %>
+<script>
+$(function() {
+  $('.gps').click(function() {
+    $('#loader').modal('show');
+  })
+
+
+});
+</script>
 <% include partials/footer.ejs %>

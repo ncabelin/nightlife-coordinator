@@ -2,126 +2,117 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h4>Search Results around <%= location %></h4>
-      <% if (!user) { %>
-      <p class="small pull-right">Login to Save Results and Collaborate with Friends..</p>
-      <% } else { %>
-          <button class="btn btn-default" id="save_all">Save All Results</button>
-      <% } %>
+      <h1>My Bars</h1>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <hr>
-      <% results.businesses.forEach(function(d) { %>
-      <div class="panel panel-default">
-        <div class="panel-heading" id="<%= d.id %>">
-          <h3 class="panel-title"><strong><%= d.name %></strong></h3>
-          <% if (user) { %>
-            <button class="save btn btn-default" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
-          <% } %>
+  <div class="container flexthis">
+      <div class="row" style="display: flex; flex-wrap: wrap;">
+          <% user.my_bars.forEach(function(d) { %>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title"><strong><%= d.name %></strong></h3>
+              <span class="go tool-tip" data-id="<%= d.id %>" id="going-div-<%= d.id %>">
+                <span id="going-btn-<%= d.id %>" class="btn btn-default tool-btn light-btn"><%= d.going.length %> Going</span>
+                <span class="small tool-tip-text clearfix" id="names-<%= d.id %>">
+                  <% d.going.forEach(function(u) { %>
+                    <%= u.name %><br>
+                  <% }) %>
+                </span>
+              </span>
+              <span class="small btn btn-default light-btn date tool-tip" data-id="<%= d.id %>">
+                <span id="date-text-<%= d.id %>"><%= moment(d.date).format( 'MMM DD,YYYY') %></span>
+                <span class="small tool-tip-text">click to change date to today</span>
+              </span>
+            </div>
+            <div class="panel-body">
+              <img src="<%= d.picture %>" class="img-responsive">
+              <small><em>&quot;<%= d.review %>&quot;</em><br><a href="<%= d.url %>" target="_blank">read more on Yelp...</a></small>
+              <img src="<%= d.stars %>" class="img-responsive" style="margin-top:10px;">
+              <form method="POST" action="/delete_bar" style="display:inline;">
+                <input type="hidden" name="bar_id" value="<%= d._id %>">
+                <button type="submit" class="btn btn-default dark-btn pull-right">Remove from My Bar List</button>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="panel-body">
-          <img src="<%= d.image_url %>" class="img-responsive">
-          <small><em>&quot;<%= d.snippet_text %>&quot;</em><br><a href="<%= d.url %>" target="_blank">read more on Yelp...</a></small>
-          <img src="<%= d.rating_img_url_large %>" class="img-responsive" style="margin-top:10px;">
-        </div>
+          <% }); %>
       </div>
-      <% }); %>
-    </div>
   </div>
 </div>
 <% include partials/scripts.ejs %>
-<% if (user) { %>
 <script>
 $(function() {
-  var results = <%- JSON.stringify(results) %>;
-  console.log(results);
 
-  // checks if bar exists, returns AJAX promise
-  function checkBar(id) {
-    return $.ajax({
-      type: 'POST',
-      url: '/check_bar',
-      data: { id: id },
-      dataType: 'json'
+  var my_bars = <%- JSON.stringify(user.my_bars) %>
+  console.log(my_bars);
+  var users = [];
+
+  function generateNames(bar) {
+    var going_names = '',
+        going_count = bar.going.length;
+    // populate bar names for the tooltip hover
+    bar.going.forEach(function(b, i) {
+      i === going_count - 1 ? going_names += b.name : going_names += b.name + ', ';
     });
+    return going_names;
   }
 
-  // check all bars on page load
-  results.businesses.forEach(function(b) {
-    console.log('checking ' + b.name);
-    checkBar(b.id)
-      .done(function(bar) {
-        console.log(bar);
-        renderSavedBar({data: bar});
-      })
-      .fail(function(e) {
-        console.log('didnt find ' + b.name);
-      });
-  })
+  function changeDateToday(bar_id) {
+    $.ajax({
+      type: 'POST',
+      url: '/change_date',
+      data: { bar_id: bar_id },
+      dataType: 'json'
+    }).done(function(result) {
+      var date = new Date();
+      $('#date-text-' + bar_id)
+        .text((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+    }).fail(function(e) {
+      alert('Failed to change date');
+    })
+  }
 
-  $('#save_all').click(function() {
-      // save all results
-
-  });
-
-  // render bar title elements and hide 'save' button
+  // render bar title elements, show 'going' button and hide 'save' button
   function renderSavedBar(bar) {
     var bar_id = bar.data.id,
-        bar_names = '',
-        going_btn = $('#going-' + bar_id);
+        going_names = '',
+        going_count = bar.data.going.length,
+        name_list = $('#names-' + bar_id),
+        going_btn = $('#going-btn-' + bar_id);
 
-    if (bar.data.going.length > 0) {
-      // populate bar names for the tooltip hover
-      bar.data.going.forEach(function(b, i) {
-        if (i == bar.data.going.length - 1) {
-          bar_names += b.name;
-        } else {
-          bar_names += b.name + ',\r\n';
-        }
-      });
+    if (going_count > 0) {
+      going_names = generateNames(bar.data);
     }
 
-    if (!going_btn.html()) {
-      $('#' + bar_id).append('<span class="btn btn-default going-btn" data-toggle="tooltip" data-placement="bottom" id="going-' + bar_id + '" title="' + bar_names + '">' + bar.data.going.length + ' going</span>')
-        .css('background-color','green')
-        .css('color', 'white');
-    } else {
-      going_btn.text(bar.data.going.length + ' going');
-    }
-    $('#going-' + bar_id).click(function() {
-      // add bar where you are going
-      var going_id = this.id.split('going-')[1];
-      $.ajax({
-        type: 'POST',
-        url: '/going',
-        data: { id: going_id }
-      }).done(function(d) {
-        // reload page
-        location.reload();
-      }).fail(function(e) {
-        console.log(e);
-      });
-    });
-    $('#save-btn-' + bar_id).hide();
-    // Enable all tooltips
-    $('[data-toggle="tooltip"]').tooltip();
+    name_list.text(going_names);
+    going_btn.text(going_count + ' going');
   }
 
-  // clicking save creates new bar title elements
-  $('.save').click(function() {
+  // clicking go hides
+  $('.go').click(function() {
     var id = $(this).data('id');
-    results.businesses.forEach(function(d) {
+    my_bars.forEach(function(d) {
       if (d.id === id) {
         $.ajax({
           type: 'POST',
-          url: '/save_location',
-          data: d,
+          url: '/going',
+          data: { id: d.id },
           dataType: 'json'
         }).done(function(result) {
-          console.log(result);
-          renderSavedBar(result);
+          // result.message indicates user has already clicked go before
+          // will update going count and names
+          if (result.message) {
+            console.log('deleted ' + result.name);
+
+            // change name list
+            $('#names-' + id).text(generateNames(result.bar));
+
+            // change value
+            $('#going-btn-' + id).text(result.bar.going.length + ' going');
+          } else {
+            renderSavedBar({ data: result});
+          }
         }).fail(function(err) {
           console.log(err);
         });
@@ -129,7 +120,24 @@ $(function() {
     });
   });
 
+  $('.date').click(function() {
+    var id = $(this).data('id');
+    changeDateToday(id);
+  })
+
+  // $('.delete').click(function() {
+  //   var id = $(this).data('id');
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: '/remove_bar',
+  //     data: { bar_id: id }
+  //   }).done(function(result) {
+  //     location.reload = '/';
+  //   }).fail(function(err) {
+  //     alert('Failed to delete');
+  //   });
+  // });
+
 });
 </script>
-<% } %>
 <% include partials/footer.ejs %>

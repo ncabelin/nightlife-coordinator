@@ -19,14 +19,15 @@
         <div class="panel-heading" id="<%= d.id %>">
           <h3 class="panel-title"><strong><%= d.name %></strong></h3>
           <% if (user) { %>
-            <button class="save btn btn-default" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
+            <button class="save btn btn-default btn-xs light-btn" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
             <span class="go tool-tip" data-id="<%= d.id %>" id="going-div-<%= d.id %>">
-              <span id="going-btn-<%= d.id %>" class="btn btn-default tool-btn">0 Going</span>
+              <span id="going-btn-<%= d.id %>" class="btn btn-default btn-xs tool-btn light-btn">0 Going</span>
               <span class="small tool-tip-text clearfix" id="names-<%= d.id %>"></span>
             </span>
-            <!-- <div class="tool-tip">Hover over me
-              <span class="tool-tip-text">Tooltip text</span>
-            </div> -->
+            <span class="small btn btn-default light-btn btn-xs tool-tip date" id="date-<%= d.id  %>" data-id="<%= d.id %>">
+              <span id="date-text-<%= d.id  %>"></span>
+              <span class="small tool-tip-text">click to change date to today</span>
+            </span>
           <% } %>
         </div>
         <div class="panel-body">
@@ -63,9 +64,9 @@
 <script>
 $(function() {
   var results = <%- JSON.stringify(results) %>;
+
   // stores saved bar location id
   var saved_bars = [];
-  console.log(results);
 
   // checks if bar exists, returns AJAX promise
   function checkBar(id) {
@@ -79,10 +80,12 @@ $(function() {
 
   // generate Loading spinner on page load
   $('#loader').modal('show');
+
   // check all bars on page load
   results.businesses.forEach(function(b, i) {
     console.log('checking ' + b.name);
     $('#going-btn-' + b.id).hide();
+    $('#date-' + b.id).hide();
 
     // check if bars are already saved
     checkBar(b.id)
@@ -95,6 +98,9 @@ $(function() {
       })
       .fail(function(e) {
         console.log('didnt find ' + b.name);
+        if (i === results.businesses.length - 1) {
+          $('#loader').modal('hide');
+        }
       });
   })
 
@@ -115,16 +121,37 @@ $(function() {
         going_count = bar.data.going.length,
         name_list = $('#names-' + bar_id),
         save_btn = $('#save-btn-' + bar_id),
+        date_btn = $('#date-' + bar_id),
+        date_text = $('#date-text-' + bar_id),
         going_btn = $('#going-btn-' + bar_id);
 
     if (going_count > 0) {
       going_names = generateNames(bar.data);
     }
 
+    var date = new Date(bar.data.date);
+    console.log(date);
     going_btn.show();
+    date_btn.show();
+    date_text.text((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
     name_list.text(going_names);
     going_btn.text(going_count + ' going');
     save_btn.hide();
+  }
+
+  function changeDateToday(bar_id) {
+    $.ajax({
+      type: 'POST',
+      url: '/change_date',
+      data: { bar_id: bar_id },
+      dataType: 'json'
+    }).done(function(result) {
+      var date = new Date();
+      $('#date-text-' + bar_id)
+        .text((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+    }).fail(function(e) {
+      alert('Failed to change date');
+    })
   }
 
   // CLICK HANDLERS
@@ -149,7 +176,7 @@ $(function() {
       });
   });
 
-  // clicking go hides
+  // add to going list
   $('.go').click(function() {
     var id = $(this).data('id');
     results.businesses.forEach(function(d) {
@@ -200,6 +227,11 @@ $(function() {
       }
     });
   });
+
+  $('.date').click(function() {
+    var id = $(this).data('id');
+    changeDateToday(id);
+  })
 
 });
 </script>

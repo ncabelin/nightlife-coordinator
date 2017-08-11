@@ -15,10 +15,7 @@ passport.use(new TwitterStrategy({
 
   var updates = {
     name: profile.displayName,
-    twitter_id: profile.id,
-    my_bars: [],
-    my_friends: [],
-    my_friend_requests: []
+    twitter_id: profile.id
   };
 
   var options = {
