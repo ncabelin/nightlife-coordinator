@@ -74,7 +74,7 @@ h1 {
   .jumbotron h1, .jumbotron p {
     color: white; }
   .jumbotron h1 {
-    letter-spacing: -5px; }
+    letter-spacing: -2px; }
 
 .panel-default > .panel-heading {
   background-color: #bd1f1f;
