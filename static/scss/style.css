@@ -1,7 +1,15 @@
 body {
   background-color: #e6ecf0;
   font-family: 'Lato', sans-serif;
-  font-size: 18px; }
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility; }
+
+.backdrop {
+  background: url("http://res.cloudinary.com/dd6kwd0zn/image/upload/v1502416697/bars_gqifly.jpg") center center no-repeat;
+  background-size: cover;
+  height: 800px;
+  width: 100%; }
 
 h1 {
   font-weight: bold;
@@ -15,49 +23,74 @@ h1 {
   .logo .whiteish {
     color: #fff; }
   .logo .darkish {
-    color: #1DA1F2 !important; }
+    color: #83cbf7 !important; }
 
 .logo-white {
   color: #fff; }
 
+.dark-btn {
+  color: white;
+  background-color: #bd1f1f;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e2d1d1; }
+  .dark-btn :hover {
+    color: black;
+    background-color: #e2d1d1 !important; }
+
+.light-btn {
+  background-color: #e2d1d1 !important;
+  border: 1px solid #bd1f1f;
+  color: black;
+  margin-left: 10px; }
+
 .navbar {
-  background-color: #fff;
-  color: #66757f;
-  border-bottom: 1px solid #acb1b4; }
+  background-color: #bd1f1f;
+  color: #fff;
+  border-radius: 0;
+  border: 0; }
   .navbar li a:hover, .navbar .active {
-    color: #1DA1F2;
-    padding-bottom: 13px;
-    border-bottom: 2px solid #1DA1F2; }
+    color: #fff;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #e2d1d1; }
+  .navbar .navbar-brand, .navbar li a {
+    color: #fff !important; }
 
 .well {
   background-color: #fff; }
 
 .jumbotron {
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1da1f2+0,2989d8+0,7db9e8+100 */
-  background: #1da1f2;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#bd1f1f+0,bc6e20+50,ba7c1f+100 */
+  background: #bd1f1f;
   /* Old browsers */
-  background: -moz-linear-gradient(left, #1da1f2 0%, #2989d8 0%, #7db9e8 100%);
+  background: -moz-linear-gradient(left, #bd1f1f 0%, #bc6e20 50%, #ba7c1f 100%);
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, #1da1f2 0%, #2989d8 0%, #7db9e8 100%);
+  background: -webkit-linear-gradient(left, #bd1f1f 0%, #bc6e20 50%, #ba7c1f 100%);
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, #1da1f2 0%, #2989d8 0%, #7db9e8 100%);
+  background: linear-gradient(to right, #bd1f1f 0%, #bc6e20 50%, #ba7c1f 100%);
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1da1f2', endColorstr='#7db9e8',GradientType=1 );
-  /* IE6-9 */
-  color: #fff;
-  border-radius: 0 !important; }
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bd1f1f', endColorstr='#ba7c1f',GradientType=1 );
+  /* IE6-9 */ }
+  .jumbotron h1, .jumbotron p {
+    color: white; }
+  .jumbotron h1 {
+    letter-spacing: -5px; }
+
+.panel-default > .panel-heading {
+  background-color: #bd1f1f;
+  color: white; }
 
 .fa-twitter {
-  color: #1DA1F2; }
+  color: #83cbf7; }
 
 .btn {
   margin-right: 10px;
   border-radius: 100px; }
 
 .btn-twitter {
-  background-color: #1DA1F2;
+  background-color: #83cbf7;
   color: #fff;
-  border: 1px solid #1DA1F2; }
+  border: 1px solid #83cbf7; }
 
 .thumbnail {
   max-height: 100px; }
@@ -67,7 +100,7 @@ h1 {
   border-top-right-radius: 0; }
 
 .list-group-item:hover {
-  background-color: #4db5f5;
+  background-color: #b3dffa;
   color: white;
   text-decoration: none; }
 
@@ -95,7 +128,7 @@ a:hover {
   background-color: transparent; }
 
 .navbar-default .navbar-toggle .icon-bar {
-  background-color: #1DA1F2; }
+  background-color: #83cbf7; }
 
 /* Tooltip container */
 .tool-tip {
