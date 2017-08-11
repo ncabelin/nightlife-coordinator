@@ -2,7 +2,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h4>Search Results around <%= location %></h4>
+      <h4><%= results.businesses.length %> Search Results around '<%= location %>'</h4>
       <% if (!user) { %>
       <p class="small pull-right">Login to Save Results and Collaborate with Friends..</p>
       <% } else { %>
@@ -17,7 +17,7 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading" id="<%= d.id %>">
-          <h3 class="panel-title"><strong><%= d.name %></strong></h3>
+          <h3 class="panel-title"><strong><%= d.name %></strong></h3><br>
           <% if (user) { %>
             <button class="save btn btn-default btn-xs light-btn" data-id="<%= d.id %>" id="save-btn-<%= d.id %>">Save</button>
             <span class="go tool-tip" data-id="<%= d.id %>" id="going-div-<%= d.id %>">
