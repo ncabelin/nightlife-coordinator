@@ -11,19 +11,6 @@ var User = new Schema({
       ref: 'My_bars'
     }
   ],
-  my_friends: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'My_friends'
-    }
-  ],
-  // pending requests, which you need to approve
-  my_friend_requests: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'My_friends_requests'
-    }
-  ],
   my_locations: [
     {
       type: mongoose.Schema.Types.ObjectId,
